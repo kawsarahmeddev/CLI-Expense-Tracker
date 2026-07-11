@@ -1,0 +1,114 @@
+import 'dart:io';
+
+extension CurrencyFormatter on double {
+  String formatAmount() {
+    return '৳${this.toStringAsFixed(2)}';
+  }
+}
+
+class Expense {
+  String title;
+  double amount;
+  String category;
+
+  Expense(this.title, this.amount, this.category);
+
+  String getDetails() {
+    return '$title - ${amount.formatAmount()} - $category';
+  }
+}
+
+class Food extends Expense {
+  Food(String title, double amount) : super(title, amount, 'Food');
+
+  @override
+  String getDetails() {
+    return '$title \t- ${amount.formatAmount()} \t- $category';
+  }
+}
+
+class Transport extends Expense {
+  Transport(String title, double amount) : super(title, amount, 'Transport');
+
+  @override
+  String getDetails() {
+    return '$title \t- ${amount.formatAmount()} \t- $category';
+  }
+}
+
+class Entertainment extends Expense {
+  Entertainment(String title, double amount)
+    : super(title, amount, 'Entertainment');
+
+  @override
+  String getDetails() {
+    return '$title \t- ${amount.formatAmount()} \t- $category';
+  }
+}
+
+class OtherExpense extends Expense {
+  OtherExpense(String title, double amount, String category)
+    : super(title, amount, category);
+
+  @override
+  String getDetails() {
+    return '$title \t- ${amount.formatAmount()} \t- $category';
+  }
+}
+
+void main() {
+  List<Expense> expenses = [];
+
+  while (true) {
+    print('\n===== Expense Tracker =====');
+    print('1. Add Expense');
+    print('2. View All Expenses');
+    print('3. Show Total Expenses');
+    print('4. Exit');
+    stdout.write('Choose Option: ');
+
+    String? option = stdin.readLineSync();
+
+    if (option == '1') {
+      stdout.write('\nEnter Expense Title: ');
+      String title = stdin.readLineSync() ?? 'Unknown';
+
+      stdout.write('Enter Expense Amount: ');
+      double amount = double.tryParse(stdin.readLineSync() ?? '0') ?? 0.0;
+
+      stdout.write('Enter Category: ');
+      String category = stdin.readLineSync() ?? 'Other';
+
+      Expense newExpense;
+
+      if (category.toLowerCase() == 'food') {
+        newExpense = Food(title, amount);
+      } else if (category.toLowerCase() == 'transport') {
+        newExpense = Transport(title, amount);
+      } else if (category.toLowerCase() == 'entertainment') {
+        newExpense = Entertainment(title, amount);
+      } else {
+        newExpense = OtherExpense(title, amount, category);
+      }
+
+      expenses.add(newExpense);
+      print('Expense Added Successfully!');
+    } else if (option == '2') {
+      print('\n===== All Expenses =====');
+      for (int i = 0; i < expenses.length; i++) {
+        print('${i + 1}. ${expenses[i].getDetails()}');
+      }
+    } else if (option == '3') {
+      double total = 0;
+      for (var expense in expenses) {
+        total += expense.amount;
+      }
+      print('\nTotal Expenses: ${total.formatAmount()}');
+    } else if (option == '4') {
+      print('\nThank you for using Expense Tracker!');
+      break;
+    } else {
+      print('\nInvalid Option. Please try again.');
+    }
+  }
+}
